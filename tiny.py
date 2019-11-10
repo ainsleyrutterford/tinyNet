@@ -11,11 +11,11 @@ class network:
             self.activation   = self.sigmoid
             self.activation_d = self.sigmoid_d
 
-    def sigmoid(self, weights, inputs):
-        return 1 / (1 + np.exp( -np.dot(weights, inputs) ))
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-x))
 
-    def sigmoid_d(self):
-        pass
+    def sigmoid_d(self, x):
+        return x * (1 - x)
 
     def add_layer(self, inputs, outputs):
         self.weights.append(np.random.rand(inputs, outputs))
@@ -27,6 +27,7 @@ class network:
         for layer in self.weights:
             layer_outputs = []
             for neuron_weights in layer.T:
-                layer_outputs.append(self.activation(neuron_weights, inputs))
+                weighted_sum = np.dot(neuron_weights, inputs)
+                layer_outputs.append(self.activation(weighted_sum))
             inputs = layer_outputs
         return inputs
