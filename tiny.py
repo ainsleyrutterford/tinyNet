@@ -7,6 +7,9 @@ class network:
     def add_layer(self, inputs, outputs):
         self.weights.append(np.random.rand(inputs, outputs))
 
+    def activate(self, weights, inputs):
+        return np.dot(weights, inputs)
+
     def sigmoid(self):
         pass
 
