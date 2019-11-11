@@ -48,14 +48,7 @@ class network:
                     next_index = len(self.weights) - i
                     for k in range(len(self.weights[next_index][j])):
                         error += (self.weights[next_index][j][k] * self.neurons[next_index][k].delta)
-                    errors.append(error)
-
-                for j, weight in self.weights[len(self.weights)-i]:
-                    error = 0.0
-                    for neuron in self.neurons[len(self.neurons)-i]:
-                        error += (weight * neuron.delta)
-                    errors.append(error)
-                    
+                    errors.append(error) 
             for j, neuron in enumerate(layer_neurons):
                 neuron.delta = errors[j] * self.activation_d(neuron.activation)
 
