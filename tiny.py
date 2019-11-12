@@ -60,5 +60,15 @@ class network:
                 for j in range(len(inputs)):
                     self.weights[i][j][n] += learning_rate * self.neurons[i][n].delta * inputs[j]
 
-    def train(self):
-        pass
+    def train(self, data, learning_rate, epochs):
+        for epoch in range(epochs):
+            sum_error = 0
+            for sample in data:
+                outputs = self.forward_prop(sample[:-1])
+                label = sample[-1]
+                expected_outputs = [0] * len(self.neurons[-1])
+                expected_outputs[label] = 1
+                sum_error += sum([(expected_outputs[i] - outputs[i])**2 for i in range(len(expected_outputs))])
+                self.back_prop(expected_outputs)
+                self.update_weights(sample[:-1], learning_rate)
+            print('epoch {0}, error {1}'.format(epoch, sum_error))
