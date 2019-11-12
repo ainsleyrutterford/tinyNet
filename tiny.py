@@ -25,15 +25,9 @@ class network:
     def sigmoid_d(self, x):
         return x * (1 - x)
 
-    def relu(self, x):
-        return x * (x > 0)
-
-    def relu_d(self, x):
-        return (x > 0).astype(int)
-
     def add_layer(self, inputs, outputs):
         self.neurons.append([neuron()] * outputs)
-        self.weights.append(np.random.rand(inputs, outputs))
+        self.weights.append(np.random.uniform(-1, 1, (inputs, outputs)))
 
     def forward_prop(self, inputs):
         for i, layer in enumerate(self.weights):
@@ -75,9 +69,8 @@ class network:
             for sample in data:
                 outputs = self.forward_prop(sample[:-1])
                 label = sample[-1]
-                expected_outputs = [0] * len(self.neurons[-1])
-                expected_outputs[label] = 1
+                expected_outputs = [label] * len(self.neurons[-1])
                 sum_error += sum([(expected_outputs[i] - outputs[i])**2 for i in range(len(expected_outputs))])
                 self.back_prop(expected_outputs)
                 self.update_weights(sample[:-1], learning_rate)
-            print(f'epoch {epoch}, error {sum_error}')
+            # print(f'epoch {epoch}, error {sum_error}')
