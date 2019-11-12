@@ -52,5 +52,13 @@ class network:
             for j, neuron in enumerate(layer_neurons):
                 neuron.delta = errors[j] * self.activation_d(neuron.activation)
 
+    def update_weights(self, inputs, learning_rate):
+        for i in range(len(self.weights)):
+            if (i != 0):
+                inputs = [neuron.activation for neuron in self.neurons[i - 1]]
+            for n in range(len(self.neurons[i])):
+                for j in range(len(inputs)):
+                    self.weights[i][j][n] += learning_rate * self.neurons[i][n].delta * inputs[j]
+
     def train(self):
         pass
