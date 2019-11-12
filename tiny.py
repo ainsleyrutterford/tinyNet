@@ -15,12 +15,21 @@ class network:
         if activation == 'sigmoid':
             self.activation   = self.sigmoid
             self.activation_d = self.sigmoid_d
+        elif activation == 'relu':
+            self.activation   = self.relu
+            self.activation_d = self.relu_d
 
     def sigmoid(self, x):
         return 1 / (1 + np.exp(-x))
 
     def sigmoid_d(self, x):
         return x * (1 - x)
+
+    def relu(self, x):
+        return x * (x > 0)
+
+    def relu_d(self, x):
+        return (x > 0).astype(int)
 
     def add_layer(self, inputs, outputs):
         self.neurons.append([neuron()] * outputs)
@@ -71,4 +80,4 @@ class network:
                 sum_error += sum([(expected_outputs[i] - outputs[i])**2 for i in range(len(expected_outputs))])
                 self.back_prop(expected_outputs)
                 self.update_weights(sample[:-1], learning_rate)
-            print('epoch {0}, error {1}'.format(epoch, sum_error))
+            print(f'epoch {epoch}, error {sum_error}')
