@@ -15,9 +15,6 @@ class network:
         if activation == 'sigmoid':
             self.activation   = self.sigmoid
             self.activation_d = self.sigmoid_d
-        elif activation == 'relu':
-            self.activation   = self.relu
-            self.activation_d = self.relu_d
 
     def sigmoid(self, x):
         return 1 / (1 + np.exp(-x))
