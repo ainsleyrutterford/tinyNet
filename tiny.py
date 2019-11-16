@@ -49,3 +49,19 @@ class network:
                 layer_outputs.append(activation)
             inputs = layer_outputs
         return inputs
+
+    def backward_prop(self, expected):
+        for i in reversed(range(len(self.neurons))):
+            layer = self.neurons[i]
+            errors = []
+            if i == len(self.neurons)-1:
+                for j, neuron in enumerate(layer):
+                    errors.append(expected[j] - neuron.activation)
+            else:
+                for j in range(len(layer)):
+                    error = 0.0
+                    for neuron in self.neurons[i + 1]:
+                        error += (neuron.weights[j] * neuron.delta)
+                    errors.append(error)
+            for j, neuron in enumerate(layer):
+                neuron.delta = errors[j] * self.activation_d(neuron.activation)
