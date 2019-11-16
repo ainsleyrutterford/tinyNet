@@ -8,12 +8,7 @@ class neuron:
 
     def __init__(self, inputs):
         self.weights = np.random.uniform(-1, 1, (inputs))
-        # if (inputs == 1):
-        #     self.weights = np.array([0.13436424411240122, 0.8474337369372327, 0.763774618976614])
-        # elif (inputs == 2):
-        #     self.weights = np.array([0.2550690257394217, 0.49543508709194095])
-        # elif (inputs == 3):
-        #     self.weights = np.array([0.4494910647887381, 0.651592972722763])
+
 
 class network:
 
@@ -34,10 +29,6 @@ class network:
 
     def add_layer(self, inputs, outputs):
         self.neurons.append([neuron(inputs + 1) for i in range(outputs)])
-        # if (outputs == 1):
-        #     self.neurons.append([neuron(1)])
-        # elif (outputs == 2):
-        #     self.neurons.append([neuron(2),neuron(3)])
 
     def forward_prop(self, inputs):
         for layer in self.neurons:
@@ -50,7 +41,7 @@ class network:
             inputs = layer_outputs
         return inputs
 
-    def backward_prop(self, expected):
+    def back_prop(self, expected):
         for i in reversed(range(len(self.neurons))):
             layer = self.neurons[i]
             errors = []
@@ -65,3 +56,25 @@ class network:
                     errors.append(error)
             for j, neuron in enumerate(layer):
                 neuron.delta = errors[j] * self.activation_d(neuron.activation)
+        
+    def update_weights(self, inputs, learning_rate):
+        for i in range(len(self.neurons)):
+            if i != 0:
+                inputs = [neuron.activation for neuron in self.neurons[i - 1]]
+            for neuron in self.neurons[i]:
+                for j in range(len(inputs)):
+                    neuron.weights[j] += learning_rate * neuron.delta * inputs[j]
+                neuron.weights[-1] += learning_rate * neuron.delta
+
+    def train(self, data, learning_rate, epochs):
+        for epoch in range(epochs):
+            sum_error = 0
+            for sample in data:
+                outputs = self.forward_prop(sample[:-1])
+                label = sample[-1]
+                expected = [0] * len(self.neurons[-1])
+                expected[label] = 1
+                sum_error += sum([(expected[i] - outputs[i])**2 for i in range(len(expected))])
+                self.back_prop(expected)
+                self.update_weights(sample[:-1], learning_rate)
+            print(f'epoch {epoch}, error {sum_error}')
