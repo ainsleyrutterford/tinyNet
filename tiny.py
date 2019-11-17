@@ -15,11 +15,13 @@ class neuron:
 class network:
 
     neurons = []
+    error_history = []
     activation   = lambda: None
     activation_d = lambda: None
 
     def __init__(self, activation):
         self.neurons = []
+        self.error_history = []
         if activation == 'sigmoid':
             self.activation   = self.sigmoid
             self.activation_d = self.sigmoid_d
@@ -80,4 +82,5 @@ class network:
                 sum_error += sum([(expected[i] - outputs[i])**2 for i in range(len(expected))])
                 self.back_prop(expected)
                 self.update_weights(sample[:-1], learning_rate)
+            self.error_history.append(sum_error)
             print(f'epoch {epoch}, error {sum_error}')
