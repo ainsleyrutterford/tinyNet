@@ -8,6 +8,8 @@ class neuron:
 
     def __init__(self, inputs):
         self.weights = np.random.uniform(-1, 1, (inputs))
+        activation = 0
+        delta = 0
 
 
 class network:
@@ -17,6 +19,7 @@ class network:
     activation_d = lambda: None
 
     def __init__(self, activation):
+        self.neurons = []
         if activation == 'sigmoid':
             self.activation   = self.sigmoid
             self.activation_d = self.sigmoid_d
