@@ -14,19 +14,25 @@ training_images = training_images.reshape(end_sample - start_sample, 784)
 
 training_data = np.c_[ training_images, training_labels ]
 
-nn = tiny.network(activation='sigmoid')
-nn.add_layer(784, 200)
-nn.add_layer(200, 100)
-nn.add_layer(100, 10)
+test_images = idx2numpy.convert_from_file('mnist/t10k-images-idx3-ubyte')
+test_labels = idx2numpy.convert_from_file('mnist/t10k-labels-idx1-ubyte')
+test_images = test_images.reshape(len(test_images), 784)
 
-nn.train(training_data, 0.7, 600)
+test_data = np.c_[ test_images, test_labels ]
+
+nn = tiny.network(activation='sigmoid')
+nn.add_layer(784, 128)
+nn.add_layer(128, 64)
+nn.add_layer(64, 10)
+
+# f = open('saved_mnist_tiny', 'rb')
+# nn = pickle.load(f)
+# f.close()
+
+nn.train(training_data, test_data, 0.02, 5)
 
 file_name = 'saved_mnist_tiny'
 print(f'Saving network in: {file_name}')
 f = open(file_name, 'wb')
 pickle.dump(nn, f)
 f.close()
-
-# f = open('saved_mnist_tiny', 'rb')
-# nn = pickle.load(f)
-# f.close()
