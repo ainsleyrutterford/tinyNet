@@ -80,39 +80,44 @@ class network:
                     neuron.weights[j] += learning_rate * neuron.delta * inputs[j]
                 neuron.weights[-1] += learning_rate * neuron.delta
 
+    def process_sample(self, sample):
+        label = sample[-1]
+        sample = sample[:-1]
+        expected = [0] * len(self.neurons[-1])
+        expected[label] = 1
+        return (sample, label, expected)
+
+    def update_history(self, val_acc, val_loss, data_acc, data_loss, error):
+        self.validation_accuracy_history.append(val_acc)
+        self.validation_loss_history.append(val_loss)
+        self.data_accuracy_history.append(data_acc)
+        self.data_loss_history.append(data_loss)
+        self.error_history.append(error)
+
+    def validation_stats(self, validation_data):
+        validation_loss = 0
+        validation_accuracy = 0
+        for sample in validation_data:
+            sample, label, expected = self.process_sample(sample)
+            outputs = self.forward_prop(sample)
+            if np.argmax(outputs) == label: validation_accuracy += (1/len(validation_data))
+            validation_loss += (log_loss(expected, outputs)/len(validation_data))
+        return validation_accuracy, validation_loss
+    
     def train(self, data, validation_data, learning_rate, epochs):
         for epoch in range(epochs):
             sum_error = 0
-            validation_accuracy = 0
-            validation_loss = 0
             data_accuracy = 0
             data_loss = 0
-            for sample in validation_data:
-                outputs = self.forward_prop(sample[:-1])
-                label = sample[-1]
-                expected = [0] * len(self.neurons[-1])
-                expected[label] = 1
-                if np.argmax(outputs) == label:
-                    validation_accuracy += 1
-                validation_loss += log_loss(expected, outputs)
-            validation_accuracy /= len(validation_data)
-            validation_loss /= len(validation_data)
-            self.validation_accuracy_history.append(validation_accuracy)
-            self.validation_loss_history.append(validation_loss)
+            validation_accuracy, validation_loss = self.validation_stats(validation_data)
             for sample in data:
-                outputs = self.forward_prop(sample[:-1])
-                label = sample[-1]
-                if np.argmax(outputs) == label:
-                    data_accuracy += 1
-                expected = [0] * len(self.neurons[-1])
-                expected[label] = 1
-                data_loss += log_loss(expected, outputs)
+                sample, label, expected = self.process_sample(sample)
+                outputs = self.forward_prop(sample)
+                if np.argmax(outputs) == label: data_accuracy += (1/len(data))
+                data_loss += (log_loss(expected, outputs)/len(data))
                 sum_error += sum([(expected[i] - outputs[i])**2 for i in range(len(expected))])
                 self.back_prop(expected)
-                self.update_weights(sample[:-1], learning_rate)
-            data_accuracy /= len(data)
-            data_loss /= len(data)
-            self.data_accuracy_history.append(data_accuracy)
-            self.data_loss_history.append(data_loss)
-            self.error_history.append(sum_error)
-            print(f'epoch {epoch}, error {sum_error} validation {validation_accuracy} accuracy {data_accuracy} val_loss {validation_loss} data_loss {data_loss}')
+                self.update_weights(sample, learning_rate)
+            self.update_history(validation_accuracy, validation_loss, data_accuracy, data_loss, sum_error)
+            print(f'epoch {epoch}, error {sum_error:.4f}, validation {validation_accuracy:.4f},',
+                  f'accuracy {data_accuracy:.4f}, val_loss {validation_loss:.4f}, data_loss {data_loss:.4f}')

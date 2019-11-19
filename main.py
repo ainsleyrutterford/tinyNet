@@ -9,4 +9,4 @@ nn = tiny.network(activation='sigmoid')
 nn.add_layer(2, 1)
 nn.add_layer(1, 2)
 
-nn.train(data, 0.5, 2000)
+nn.train(data, data, 0.5, 200)

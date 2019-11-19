@@ -5,9 +5,11 @@ import tiny
 
 np.seterr(over='ignore')
 
-training_images = idx2numpy.convert_from_file('mnist/train-images-idx3-ubyte')
-training_labels = idx2numpy.convert_from_file('mnist/train-labels-idx1-ubyte')
-training_images = training_images.reshape(len(training_images), 784)
+samples = 10000
+
+training_images = idx2numpy.convert_from_file('mnist/train-images-idx3-ubyte')[:samples]
+training_labels = idx2numpy.convert_from_file('mnist/train-labels-idx1-ubyte')[:samples]
+training_images = training_images.reshape(samples, 784)
 
 training_data = np.c_[ training_images, training_labels ]
 
@@ -26,7 +28,7 @@ nn.add_layer(64, 10)
 # nn = pickle.load(f)
 # f.close()
 
-nn.train(training_data, test_data, 0.02, 1)
+nn.train(training_data, test_data, 0.02, 20)
 
 file_name = 'saved_mnist_tiny'
 print(f'Saving network in: {file_name}')
