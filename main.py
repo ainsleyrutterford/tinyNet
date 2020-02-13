@@ -1,9 +1,6 @@
 import tiny
 
-data = [[0, 0, 0], # AND
-        [0, 1, 0],
-        [1, 0, 0],
-        [1, 1, 1]]
+data = [[0, 0, 0], [0, 1, 0], [1, 0, 0], [1, 1, 1]]  # AND
 
 nn = tiny.network(activation='sigmoid')
 nn.add_layer(2, 1)

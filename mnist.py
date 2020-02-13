@@ -11,13 +11,13 @@ training_images = idx2numpy.convert_from_file('mnist/train-images-idx3-ubyte')[:
 training_labels = idx2numpy.convert_from_file('mnist/train-labels-idx1-ubyte')[:samples]
 training_images = training_images.reshape(samples, 784)
 
-training_data = np.c_[ training_images, training_labels ]
+training_data = np.c_[training_images, training_labels]
 
 test_images = idx2numpy.convert_from_file('mnist/t10k-images-idx3-ubyte')
 test_labels = idx2numpy.convert_from_file('mnist/t10k-labels-idx1-ubyte')
 test_images = test_images.reshape(len(test_images), 784)
 
-test_data = np.c_[ test_images, test_labels ]
+test_data = np.c_[test_images, test_labels]
 
 nn = tiny.network(activation='sigmoid')
 nn.add_layer(784, 128)
